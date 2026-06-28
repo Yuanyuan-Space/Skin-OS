@@ -1,0 +1,1586 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>护肤成分与穿搭日历</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #4b4742;
+      --muted: #8d8880;
+      --paper: rgba(255, 252, 246, 0.82);
+      --sage: #9aa990;
+      --sage-dark: #6f8068;
+      --mist: #d8cfc5;
+      --rose: #d9b6ad;
+      --blue: #a8b4ba;
+      --cream: #f5efe3;
+      --danger: #b86c63;
+      --danger-soft: #f4dfda;
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Zen Kaku Gothic New", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(216, 182, 173, 0.48), transparent 26%),
+        radial-gradient(circle at 88% 14%, rgba(168, 180, 186, 0.42), transparent 28%),
+        linear-gradient(145deg, #f8f1e7 0%, #ece8de 52%, #e1e4d9 100%);
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      content: "";
+      opacity: 0.28;
+      background-image:
+        linear-gradient(rgba(255,255,255,.45) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.45) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(to bottom, black, transparent 78%);
+    }
+
+    .serif {
+      font-family: "Noto Serif SC", serif;
+    }
+
+    .phone-shell {
+      box-shadow: 0 28px 70px rgba(75, 71, 66, 0.18);
+    }
+
+    .glass-card {
+      background: var(--paper);
+      border: 1px solid rgba(255, 255, 255, 0.62);
+      box-shadow: 0 18px 46px rgba(99, 91, 79, 0.11);
+      backdrop-filter: blur(18px);
+    }
+
+    .soft-card {
+      background: rgba(255, 252, 246, 0.72);
+      border: 1px solid rgba(139, 133, 123, 0.14);
+      box-shadow: 0 12px 32px rgba(92, 86, 75, 0.08);
+    }
+
+    .chip {
+      border: 1px solid rgba(111, 128, 104, 0.22);
+      background: rgba(255, 252, 246, 0.7);
+      transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease;
+    }
+
+    .chip.is-on {
+      color: #fdfbf6;
+      border-color: rgba(111, 128, 104, 0.7);
+      background: linear-gradient(135deg, var(--sage), var(--sage-dark));
+      box-shadow: 0 10px 22px rgba(111, 128, 104, 0.24);
+    }
+
+    .chip:active,
+    .tap:active {
+      transform: scale(0.98);
+    }
+
+    .fade-in {
+      animation: fadeIn .55s ease both;
+    }
+
+    .float-in {
+      animation: floatIn .65s cubic-bezier(.2,.9,.25,1) both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .calendar-card.completed {
+      filter: grayscale(.45);
+      opacity: .68;
+    }
+
+    .calendar-card.completed .task-line {
+      text-decoration: line-through;
+    }
+
+    .danger-card {
+      border-color: rgba(184, 108, 99, 0.48);
+      background: rgba(244, 223, 218, 0.68);
+      box-shadow: 0 16px 34px rgba(184, 108, 99, 0.13);
+    }
+    .upload-zone {
+      border: 1.5px dashed rgba(154, 169, 144, 0.72);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.62), rgba(238,240,232,.62));
+    }
+    .loading-ring {
+      width: 26px;
+      height: 26px;
+      border: 3px solid rgba(111, 128, 104, 0.18);
+      border-top-color: #6f8068;
+      border-radius: 999px;
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <main class="mx-auto min-h-screen w-full max-w-[480px] px-4 py-5 sm:py-8">
+    <section class="phone-shell overflow-hidden rounded-[2rem] border border-white/50 bg-[#f8f3ea]/70 p-4">
+      <header class="glass-card float-in rounded-[1.75rem] p-5">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-[11px] font-bold tracking-[0.32em] text-[#8b897f]">SKIN & OUTFIT</p>
+            <h1 class="serif mt-2 text-[28px] font-bold leading-tight tracking-[-0.04em]">Skin OS</h1>
+            <p class="mt-1 text-xs font-bold tracking-[0.18em] text-[#8b897f]">护肤穿搭日历</p>
+          </div>
+          <div class="rounded-full border border-white/70 bg-white/50 px-3 py-2 text-right">
+            <p id="todayLabel" class="text-[11px] font-bold text-[#6f8068]"></p>
+            <p class="text-[10px] text-[#8d8880]">一周计划</p>
+          </div>
+        </div>
+
+        <div class="mt-5 grid grid-cols-[1.2fr_.8fr] gap-3">
+          <div class="rounded-[1.35rem] bg-white/45 p-4">
+            <p class="text-xs text-[#8d8880]">当前位置</p>
+            <p id="cityLabel" class="mt-1 text-base font-bold">定位中</p>
+            <p id="weatherStatus" class="mt-1 text-xs text-[#8d8880]">正在请求 GPS 与天气数据</p>
+          </div>
+          <div class="rounded-[1.35rem] bg-[#eef0e8]/80 p-4 text-right">
+            <p id="temperatureLabel" class="serif text-3xl font-bold">--</p>
+            <p class="text-xs text-[#8d8880]">体感穿搭参考</p>
+          </div>
+        </div>
+
+        <div class="mt-3 rounded-[1.35rem] border border-white/60 bg-[#eef0e8]/70 px-4 py-3">
+          <p class="text-[10px] font-bold tracking-[0.26em] text-[#8b897f]">DAILY STREAK</p>
+          <p id="streakLabel" class="serif mt-1 text-lg font-bold text-[#5f6f58]">已连续守护肌肤 0 天</p>
+        </div>
+
+        <div class="mt-3 grid grid-cols-3 gap-2 text-center">
+          <div class="rounded-2xl bg-white/45 p-3">
+            <p class="text-[10px] text-[#8d8880]">湿度</p>
+            <p id="humidityLabel" class="mt-1 text-sm font-bold">--</p>
+          </div>
+          <div class="rounded-2xl bg-white/45 p-3">
+            <p class="text-[10px] text-[#8d8880]">UV</p>
+            <p id="uvLabel" class="mt-1 text-sm font-bold">--</p>
+          </div>
+          <div class="rounded-2xl bg-white/45 p-3">
+            <p class="text-[10px] text-[#8d8880]">状态</p>
+            <p id="weatherCodeLabel" class="mt-1 text-sm font-bold">--</p>
+          </div>
+        </div>
+      </header>
+
+      <div id="uvBanner" class="fade-in mt-4 hidden rounded-[1.4rem] border border-[#d59b91]/50 bg-[#f4dfda]/80 p-4 text-sm font-bold leading-relaxed text-[#8b514b]"></div>
+
+      <section class="soft-card float-in mt-4 rounded-[1.75rem] p-5" style="animation-delay: .08s">
+        <div class="mb-4 flex items-end justify-between gap-3">
+          <div>
+            <p class="text-[11px] font-bold tracking-[0.28em] text-[#8d8880]">OWNED ITEMS</p>
+            <h2 class="serif mt-1 text-xl font-bold">你拥有的护肤品</h2>
+          </div>
+          <button id="resetProducts" class="tap rounded-full bg-white/70 px-3 py-2 text-xs font-bold text-[#6f8068]">恢复推荐</button>
+        </div>
+        <div id="productOptions" class="grid grid-cols-2 gap-2"></div>
+
+        <div class="mt-5 rounded-[1.45rem] border border-white/60 bg-white/45 p-4">
+          <div class="mb-3">
+            <p class="text-[11px] font-bold tracking-[0.24em] text-[#8d8880]">MY VANITY</p>
+            <h3 class="serif mt-1 text-lg font-bold">我的化妆台</h3>
+            <p class="mt-1 text-xs leading-relaxed text-[#8d8880]">手动录入的产品会自动保存，并参与冲突检查与日历排班。</p>
+          </div>
+          <form id="customProductForm" class="space-y-3">
+            <label class="block">
+              <span class="text-[11px] font-bold text-[#7b746b]">护肤品名称</span>
+              <input id="customProductName" class="mt-1 min-h-[44px] w-full rounded-2xl border border-[#d8cfc5]/70 bg-[#fffaf2]/80 px-4 text-sm outline-none transition focus:border-[#9aa990]" type="text" maxlength="36" placeholder="例如 LuLuLun Hydra-AZ 面膜" required>
+            </label>
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <label class="block">
+                <span class="text-[11px] font-bold text-[#7b746b]">核心成分标签</span>
+                <select id="customProductCategory" class="mt-1 min-h-[44px] w-full rounded-2xl border border-[#d8cfc5]/70 bg-[#fffaf2]/80 px-4 text-sm outline-none transition focus:border-[#9aa990]">
+                  <option value="acid">高浓度酸类</option>
+                  <option value="retinol">视黄醇/A醇</option>
+                  <option value="vitamin_c">维他命C/VC</option>
+                  <option value="niacinamide">烟酰胺</option>
+                  <option value="repair">纯保湿/修护</option>
+                  <option value="sunscreen">高效防晒</option>
+                </select>
+              </label>
+              <label class="block">
+                <span class="text-[11px] font-bold text-[#7b746b]">使用时段</span>
+                <select id="customProductPeriod" class="mt-1 min-h-[44px] w-full rounded-2xl border border-[#d8cfc5]/70 bg-[#fffaf2]/80 px-4 text-sm outline-none transition focus:border-[#9aa990]">
+                  <option value="night">仅晚上</option>
+                  <option value="day">仅白天</option>
+                  <option value="both">早晚皆可</option>
+                </select>
+              </label>
+            </div>
+            <button class="tap min-h-[46px] w-full rounded-full bg-[#6f8068] px-4 py-3 text-sm font-bold text-white shadow-lg shadow-[#6f8068]/15" type="submit">添加到我的化妆台</button>
+          </form>
+          <div id="customProductList" class="mt-4 space-y-2"></div>
+        </div>
+      </section>
+
+      <section class="soft-card float-in mt-4 rounded-[1.75rem] p-5" style="animation-delay: .11s">
+        <div class="mb-4">
+          <p class="text-[11px] font-bold tracking-[0.28em] text-[#8d8880]">AI SCANNER</p>
+          <h2 class="serif mt-1 text-xl font-bold">双重拍照识别入库</h2>
+          <p class="mt-2 text-xs leading-relaxed text-[#8d8880]">上传护肤品或衣物照片，AI 会识别属性并等待你确认后保存到本机浏览器。</p>
+        </div>
+
+        <div class="rounded-[1.45rem] border border-white/60 bg-white/45 p-4">
+          <div class="rounded-2xl bg-[#eef0e8]/75 p-3 text-xs leading-relaxed text-[#6f8068]">
+            AI 识别服务将通过部署端安全代理调用，API Key 不会暴露给手机端用户。
+          </div>
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <button class="tap rounded-2xl bg-[#6f8068] px-3 py-3 text-xs font-bold text-white" data-ai-mode="skincare" type="button">识别护肤品</button>
+            <button class="tap rounded-2xl bg-white/70 px-3 py-3 text-xs font-bold text-[#6f8068]" data-ai-mode="clothing" type="button">识别衣物</button>
+          </div>
+          <label class="upload-zone tap mt-3 flex min-h-[132px] cursor-pointer flex-col items-center justify-center rounded-[1.45rem] px-4 py-5 text-center">
+            <input id="aiImageInput" class="hidden" type="file" accept="image/*" capture="environment">
+            <span class="serif text-lg font-bold text-[#5f6f58]">拍照 / 上传图片</span>
+            <span id="aiUploadHint" class="mt-2 text-xs leading-relaxed text-[#8d8880]">当前模式：护肤品识别。支持手机拍照或从相册选择。</span>
+            <img id="aiImagePreview" class="mt-3 hidden max-h-36 rounded-2xl object-cover shadow-lg shadow-[#6f8068]/10" alt="识别图片预览">
+          </label>
+          <button id="aiAnalyzeButton" class="tap mt-3 min-h-[46px] w-full rounded-full bg-[#6f8068] px-4 py-3 text-sm font-bold text-white shadow-lg shadow-[#6f8068]/15" type="button">开始 AI 识别</button>
+          <div id="aiRecognitionStatus" class="mt-3 hidden rounded-2xl bg-[#eef0e8]/75 p-3 text-xs leading-relaxed text-[#6f8068]"></div>
+          <div id="aiResultPanel" class="mt-3"></div>
+        </div>
+      </section>
+
+      <section class="soft-card float-in mt-4 rounded-[1.75rem] p-5" style="animation-delay: .12s">
+        <div class="mb-4">
+          <p class="text-[11px] font-bold tracking-[0.28em] text-[#8d8880]">SMART CLOSET</p>
+          <h2 class="serif mt-1 text-xl font-bold">我的智能衣橱</h2>
+          <p class="mt-2 text-xs leading-relaxed text-[#8d8880]">衣物会独立保存，并根据实时温湿度参与今日穿搭推荐。</p>
+        </div>
+        <div id="wardrobeList" class="space-y-2"></div>
+      </section>
+
+      <section class="soft-card float-in mt-4 rounded-[1.75rem] p-5" style="animation-delay: .14s">
+        <div class="mb-4">
+          <p class="text-[11px] font-bold tracking-[0.28em] text-[#8d8880]">CONFLICT CHECK</p>
+          <h2 class="serif mt-1 text-xl font-bold">今晚成分避坑检查</h2>
+          <p class="mt-2 text-xs leading-relaxed text-[#8d8880]">勾选今晚想叠加的产品，系统会实时检查高风险组合并给出替代方案。</p>
+        </div>
+        <div id="nightOptions" class="grid grid-cols-2 gap-2"></div>
+        <div id="conflictResult" class="mt-4 rounded-[1.35rem] p-4"></div>
+      </section>
+
+      <section class="float-in mt-5" style="animation-delay: .2s">
+        <div class="mb-3 flex items-end justify-between">
+          <div>
+            <p class="text-[11px] font-bold tracking-[0.28em] text-[#8d8880]">7 DAY BOARD</p>
+            <h2 class="serif mt-1 text-xl font-bold">本周护肤打卡</h2>
+          </div>
+          <p class="text-xs text-[#8d8880]">点击日期展开</p>
+        </div>
+        <div id="calendar" class="space-y-3"></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const productOptions = [
+      { key: "maskBasic", label: "LuLuLun 基础保湿", short: "基础保湿" },
+      { key: "maskRepair", label: "LuLuLun Precious Green", short: "修护面膜" },
+      { key: "maskNiacinamide", label: "Hydra / 烟酰胺修护", short: "烟酰胺" },
+      { key: "salicylic", label: "The Ordinary 水杨酸", short: "水杨酸" },
+      { key: "aha", label: "The Ordinary 果酸", short: "果酸" },
+      { key: "vitaminC", label: "高浓度维 C", short: "早 C" },
+      { key: "retinol", label: "视黄醇 / A 醇", short: "晚 A" },
+      { key: "sunscreen", label: "ALLIE 级别高效防晒", short: "防晒" }
+    ];
+
+    const nightOptions = [
+      { key: "salicylic", label: "水杨酸", ingredient: "salicylic_acid" },
+      { key: "aha", label: "果酸 / AHA", ingredient: "aha" },
+      { key: "retinol", label: "视黄醇 A 醇", ingredient: "retinol" },
+      { key: "vitaminC", label: "高浓度维 C", ingredient: "vitamin_c" },
+      { key: "niacinamide", label: "烟酰胺修护", ingredient: "niacinamide" },
+      { key: "repairMask", label: "温和保湿面膜", ingredient: "repair_mask" }
+    ];
+
+    const STORAGE_KEY = "skinos_custom_vanity_v1";
+    const STREAK_STORAGE_KEY = "skinos_checkin_streak_v1";
+    const WARDROBE_STORAGE_KEY = "skinos_smart_wardrobe_v1";
+
+    const categoryMeta = {
+      acid: { label: "高浓度酸类", short: "酸类", ingredient: "acid" },
+      retinol: { label: "视黄醇/A醇", short: "A 醇", ingredient: "retinol" },
+      vitamin_c: { label: "维他命C/VC", short: "VC", ingredient: "vitamin_c" },
+      niacinamide: { label: "烟酰胺", short: "烟酰胺", ingredient: "niacinamide" },
+      repair: { label: "纯保湿/修护", short: "修护", ingredient: "repair_mask" },
+      sunscreen: { label: "高效防晒", short: "防晒", ingredient: "sunscreen" }
+    };
+
+    const periodMeta = {
+      day: "仅白天",
+      night: "仅晚上",
+      both: "早晚皆可"
+    };
+
+    const skincareTagToCategory = {
+      "高浓度酸类": "acid",
+      "视黄醇/A醇": "retinol",
+      "维他命C/VC": "vitamin_c",
+      "烟酰胺": "niacinamide",
+      "纯保湿/修护": "repair",
+      "高效防晒": "sunscreen"
+    };
+
+    const skincareTimeToPeriod = {
+      "仅白天": "day",
+      "仅晚上": "night",
+      "早晚皆可": "both"
+    };
+
+    const clothingCategories = ["上衣", "外套", "下装", "鞋履", "配饰"];
+
+    const conflictRules = [
+      {
+        ingredients: ["salicylic_acid", "retinol"],
+        title: "高浓度酸 + 视黄醇",
+        reason: "两者叠加刺激性过大，熬夜后屏障脆弱时更容易发红、脱皮。",
+        suggestion: "建议今晚仅使用 The Ordinary 酸类进行局部刷酸，并搭配温和的 LuLuLun Precious Green 做基础保湿修护，将 A 醇移至明晚使用。"
+      },
+      {
+        ingredients: ["aha", "retinol"],
+        title: "高浓度酸 + 视黄醇",
+        reason: "果酸与 A 醇同晚会放大刺激，容易造成屏障不稳和干燥紧绷。",
+        suggestion: "建议今晚保留果酸焕肤，A 醇顺延至后天；如果皮肤发热，直接改成修护面膜夜。"
+      },
+      {
+        ingredients: ["salicylic_acid", "niacinamide"],
+        title: "高浓度酸 + 烟酰胺",
+        reason: "低 pH 值酸类可能增加烟酰胺转化为烟酸的风险，引起明显发红和刺痛。",
+        suggestion: "建议酸类与含烟酰胺的 Hydra / 密集修护面膜分日使用，今晚刷酸后只叠加基础保湿。"
+      },
+      {
+        ingredients: ["aha", "niacinamide"],
+        title: "高浓度酸 + 烟酰胺",
+        reason: "酸类环境与烟酰胺密集修护叠加，敏感期更容易出现刺痛和泛红。",
+        suggestion: "建议今晚只选果酸或修护面膜其一；烟酰胺修护放到明晚更稳妥。"
+      },
+      {
+        ingredients: ["retinol", "vitamin_c"],
+        title: "视黄醇 + 高浓度维 C",
+        reason: "两者最佳活性 pH 不同，同时使用会互相打折扣，并增加熬夜肌的刺激负担。",
+        suggestion: "建议把维 C 固定在早间，今晚只使用 A 醇并做好保湿；如果皮肤干燥，今晚改为纯修护。"
+      },
+      {
+        ingredients: ["salicylic_acid", "aha"],
+        title: "水杨酸 + 果酸叠加",
+        reason: "多种酸类叠加会过度剥脱角质，久坐空调房更容易干燥敏感。",
+        suggestion: "建议今晚只保留一种酸类，另一种移至间隔 2-3 天后的夜间，并在次日安排修护面膜。"
+      }
+    ];
+
+    const weatherMap = {
+      0: "晴朗",
+      1: "少云",
+      2: "多云",
+      3: "阴天",
+      45: "雾",
+      48: "雾凇",
+      51: "毛毛雨",
+      53: "小雨",
+      55: "小雨",
+      61: "小雨",
+      63: "中雨",
+      65: "大雨",
+      80: "阵雨",
+      95: "雷雨"
+    };
+
+    const defaultProducts = {
+      maskBasic: true,
+      maskRepair: true,
+      maskNiacinamide: true,
+      salicylic: true,
+      aha: false,
+      vitaminC: true,
+      retinol: true,
+      sunscreen: true
+    };
+
+    const state = {
+      products: { ...defaultProducts },
+      customProducts: [],
+      nightSelection: {
+        salicylic: true,
+        aha: false,
+        retinol: true,
+        vitaminC: false,
+        niacinamide: false,
+        repairMask: true
+      },
+      customNightSelection: {},
+      weather: {
+        city: "定位中",
+        status: "正在请求 GPS 与天气数据",
+        temperature: null,
+        humidity: null,
+        uv: null,
+        code: null
+      },
+      selectedDay: 0,
+      completed: new Set(),
+      checkinDates: [],
+      streakCount: 0,
+      wardrobeItems: [],
+      aiMode: "skincare",
+      aiImage: null,
+      aiResult: null,
+      aiLoading: false,
+      aiError: "",
+      schedule: []
+    };
+
+    const els = {
+      todayLabel: document.querySelector("#todayLabel"),
+      cityLabel: document.querySelector("#cityLabel"),
+      weatherStatus: document.querySelector("#weatherStatus"),
+      temperatureLabel: document.querySelector("#temperatureLabel"),
+      humidityLabel: document.querySelector("#humidityLabel"),
+      uvLabel: document.querySelector("#uvLabel"),
+      weatherCodeLabel: document.querySelector("#weatherCodeLabel"),
+      streakLabel: document.querySelector("#streakLabel"),
+      uvBanner: document.querySelector("#uvBanner"),
+      productOptions: document.querySelector("#productOptions"),
+      customProductForm: document.querySelector("#customProductForm"),
+      customProductName: document.querySelector("#customProductName"),
+      customProductCategory: document.querySelector("#customProductCategory"),
+      customProductPeriod: document.querySelector("#customProductPeriod"),
+      customProductList: document.querySelector("#customProductList"),
+      aiImageInput: document.querySelector("#aiImageInput"),
+      aiImagePreview: document.querySelector("#aiImagePreview"),
+      aiUploadHint: document.querySelector("#aiUploadHint"),
+      aiAnalyzeButton: document.querySelector("#aiAnalyzeButton"),
+      aiRecognitionStatus: document.querySelector("#aiRecognitionStatus"),
+      aiResultPanel: document.querySelector("#aiResultPanel"),
+      wardrobeList: document.querySelector("#wardrobeList"),
+      nightOptions: document.querySelector("#nightOptions"),
+      conflictResult: document.querySelector("#conflictResult"),
+      calendar: document.querySelector("#calendar"),
+      resetProducts: document.querySelector("#resetProducts")
+    };
+
+    function formatDate(date) {
+      return new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric", weekday: "short" }).format(date);
+    }
+
+    function shortDate(date) {
+      return new Intl.DateTimeFormat("zh-CN", { month: "numeric", day: "numeric" }).format(date);
+    }
+
+    function dateKey(date = new Date()) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function offsetDateKey(offset) {
+      const date = new Date();
+      date.setDate(date.getDate() + offset);
+      return dateKey(date);
+    }
+
+    function setToday() {
+      const now = new Date();
+      els.todayLabel.textContent = new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", weekday: "short" }).format(now);
+    }
+
+    function getWeatherText(code) {
+      return weatherMap[code] || "舒适";
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function loadCustomProducts() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        if (!Array.isArray(parsed)) return [];
+        return parsed
+          .filter(item => item && item.id && item.name && categoryMeta[item.category] && periodMeta[item.period])
+          .map(item => ({
+            id: String(item.id),
+            name: String(item.name).slice(0, 36),
+            category: item.category,
+            period: item.period,
+            tags: Array.isArray(item.tags) ? item.tags.map(tag => String(tag).slice(0, 16)).slice(0, 6) : [categoryMeta[item.category].label],
+            usage: item.usage ? String(item.usage).slice(0, 180) : "",
+            checked: item.checked !== false
+          }));
+      } catch {
+        return [];
+      }
+    }
+
+    function saveCustomProducts() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state.customProducts));
+      } catch {
+        // LocalStorage may be unavailable in strict privacy modes; the current session still works.
+      }
+    }
+
+    function normalizeCheckinDates(value) {
+      const dates = Array.isArray(value) ? value : [];
+      return [...new Set(dates.filter(item => /^\d{4}-\d{2}-\d{2}$/.test(String(item))).map(String))].sort();
+    }
+
+    function calculateStreak(dates) {
+      const completedDates = new Set(dates);
+      let startOffset = null;
+
+      if (completedDates.has(offsetDateKey(0))) {
+        startOffset = 0;
+      } else if (completedDates.has(offsetDateKey(-1))) {
+        startOffset = -1;
+      } else {
+        return 0;
+      }
+
+      let count = 0;
+      for (let offset = startOffset; completedDates.has(offsetDateKey(offset)); offset -= 1) {
+        count += 1;
+      }
+      return count;
+    }
+
+    function saveCheckinHistory() {
+      state.streakCount = calculateStreak(state.checkinDates);
+      try {
+        localStorage.setItem(STREAK_STORAGE_KEY, JSON.stringify({
+          dates: state.checkinDates,
+          streak: state.streakCount
+        }));
+      } catch {
+        // Streak history is optional; the current session can still update the UI.
+      }
+    }
+
+    function loadCheckinHistory() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(STREAK_STORAGE_KEY) || "{}");
+        state.checkinDates = normalizeCheckinDates(parsed.dates);
+      } catch {
+        state.checkinDates = [];
+      }
+      saveCheckinHistory();
+      if (state.checkinDates.includes(offsetDateKey(0))) {
+        state.completed.add(0);
+      }
+    }
+
+    function setTodayCheckin(completed) {
+      const today = offsetDateKey(0);
+      const dates = new Set(state.checkinDates);
+      if (completed) {
+        dates.add(today);
+      } else {
+        dates.delete(today);
+      }
+      state.checkinDates = normalizeCheckinDates([...dates]);
+      saveCheckinHistory();
+    }
+
+    function normalizeWardrobeItems(value) {
+      const items = Array.isArray(value) ? value : [];
+      return items
+        .filter(item => item && item.id && item.name)
+        .map(item => ({
+          id: String(item.id),
+          name: String(item.name).slice(0, 40),
+          category: clothingCategories.includes(item.category) ? item.category : "上衣",
+          temperature: String(item.temperature || "15-25").slice(0, 12),
+          attributes: Array.isArray(item.attributes) ? item.attributes.map(attr => String(attr).slice(0, 12)).slice(0, 6) : []
+        }));
+    }
+
+    function loadWardrobeItems() {
+      try {
+        return normalizeWardrobeItems(JSON.parse(localStorage.getItem(WARDROBE_STORAGE_KEY) || "[]"));
+      } catch {
+        return [];
+      }
+    }
+
+    function saveWardrobeItems() {
+      try {
+        localStorage.setItem(WARDROBE_STORAGE_KEY, JSON.stringify(state.wardrobeItems));
+      } catch {
+        // Wardrobe data stays available for the current session if storage is blocked.
+      }
+    }
+
+    function parseTemperatureRange(range) {
+      const match = String(range || "").match(/(-?\d+)\s*[-~至到]\s*(-?\d+)/);
+      if (!match) return { min: 0, max: 40 };
+      const first = Number(match[1]);
+      const second = Number(match[2]);
+      return { min: Math.min(first, second), max: Math.max(first, second) };
+    }
+
+    function normalizeSkincareAiResult(result) {
+      const tags = Array.isArray(result.tags) ? result.tags.filter(tag => skincareTagToCategory[tag]) : [];
+      const category = skincareTagToCategory[tags[0]] || "repair";
+      return {
+        name: String(result.name || "未命名护肤品").slice(0, 36),
+        tags: tags.length ? tags : [categoryMeta[category].label],
+        category,
+        period: skincareTimeToPeriod[result.time] || "both",
+        time: periodMeta[skincareTimeToPeriod[result.time] || "both"],
+        usage: String(result.usage || "请按产品说明少量试用，敏感期先做局部测试。").slice(0, 180)
+      };
+    }
+
+    function normalizeClothingAiResult(result) {
+      return {
+        name: String(result.name || "未命名衣物").slice(0, 40),
+        category: clothingCategories.includes(result.category) ? result.category : "上衣",
+        temperature: String(result.temperature || "15-25").slice(0, 12),
+        attributes: Array.isArray(result.attributes) ? result.attributes.map(attr => String(attr).slice(0, 12)).slice(0, 6) : []
+      };
+    }
+
+    function extractJsonFromText(text) {
+      const cleaned = String(text || "").replace(/```json|```/g, "").trim();
+      const start = cleaned.indexOf("{");
+      const end = cleaned.lastIndexOf("}");
+      if (start === -1 || end === -1 || end <= start) {
+        throw new Error("AI 没有返回有效 JSON");
+      }
+      return JSON.parse(cleaned.slice(start, end + 1));
+    }
+
+    function usableAtNight(product) {
+      return product.period === "night" || product.period === "both";
+    }
+
+    function usableInDay(product) {
+      return product.period === "day" || product.period === "both";
+    }
+
+    function getCheckedCustomProducts() {
+      return state.customProducts.filter(product => product.checked);
+    }
+
+    function productHasCategory(product, category) {
+      const tagCategories = Array.isArray(product.tags)
+        ? product.tags.map(tag => skincareTagToCategory[tag]).filter(Boolean)
+        : [];
+      return product.category === category || tagCategories.includes(category);
+    }
+
+    function productIngredients(product) {
+      const categories = new Set([product.category]);
+      if (Array.isArray(product.tags)) {
+        product.tags.forEach(tag => {
+          if (skincareTagToCategory[tag]) categories.add(skincareTagToCategory[tag]);
+        });
+      }
+      return [...categories].map(category => categoryMeta[category]?.ingredient).filter(Boolean);
+    }
+
+    function hasCategory(category) {
+      if (category === "acid") {
+        return state.products.salicylic || state.products.aha || getCheckedCustomProducts().some(product => productHasCategory(product, "acid") && usableAtNight(product));
+      }
+      if (category === "retinol") {
+        return state.products.retinol || getCheckedCustomProducts().some(product => productHasCategory(product, "retinol") && usableAtNight(product));
+      }
+      if (category === "vitamin_c") {
+        return state.products.vitaminC || getCheckedCustomProducts().some(product => productHasCategory(product, "vitamin_c") && usableInDay(product));
+      }
+      if (category === "niacinamide") {
+        return state.products.maskNiacinamide || getCheckedCustomProducts().some(product => productHasCategory(product, "niacinamide"));
+      }
+      if (category === "repair") {
+        return state.products.maskBasic || state.products.maskRepair || getCheckedCustomProducts().some(product => productHasCategory(product, "repair") && usableAtNight(product));
+      }
+      if (category === "sunscreen") {
+        return state.products.sunscreen || getCheckedCustomProducts().some(product => productHasCategory(product, "sunscreen") && usableInDay(product));
+      }
+      return false;
+    }
+
+    function firstCustomName(category, fallback, matcher = () => true) {
+      const product = getCheckedCustomProducts().find(item => productHasCategory(item, category) && matcher(item));
+      return product ? product.name : fallback;
+    }
+
+    function getNightTestOptions() {
+      const customNightOptions = getCheckedCustomProducts()
+        .filter(usableAtNight)
+        .map(product => ({
+          key: product.id,
+          label: product.name,
+          short: categoryMeta[product.category].short,
+          ingredient: categoryMeta[product.category].ingredient,
+          ingredients: productIngredients(product),
+          custom: true
+        }));
+      return [...nightOptions, ...customNightOptions];
+    }
+
+    function fallbackWeather(message) {
+      state.weather = {
+        city: "默认城市",
+        status: message || "定位不可用，已使用默认天气数据",
+        temperature: 23,
+        humidity: 46,
+        uv: 4,
+        code: 2
+      };
+      rebuild();
+    }
+
+    function formatCoords(latitude, longitude) {
+      return `${Number(latitude).toFixed(2)}, ${Number(longitude).toFixed(2)}`;
+    }
+
+    function fetchLocationName(latitude, longitude) {
+      const endpoint = new URL("https://api.bigdatacloud.net/data/reverse-geocode-client");
+      endpoint.search = new URLSearchParams({
+        latitude,
+        longitude,
+        localityLanguage: "zh"
+      }).toString();
+
+      return fetch(endpoint)
+        .then(response => {
+          if (!response.ok) throw new Error("location request failed");
+          return response.json();
+        })
+        .then(data => {
+          const city = data.city || data.locality || data.principalSubdivision;
+          const province = data.principalSubdivision && data.principalSubdivision !== city ? data.principalSubdivision : "";
+          const label = [province, city].filter(Boolean).join(" · ");
+          return label || `GPS ${formatCoords(latitude, longitude)}`;
+        });
+    }
+
+    function fetchWeatherByCoords(latitude, longitude) {
+      const endpoint = new URL("https://api.open-meteo.com/v1/forecast");
+      endpoint.search = new URLSearchParams({
+        latitude,
+        longitude,
+        current: "temperature_2m,relative_humidity_2m,uv_index,weather_code",
+        timezone: "auto"
+      }).toString();
+
+      fetch(endpoint)
+        .then(response => {
+          if (!response.ok) throw new Error("weather request failed");
+          return response.json();
+        })
+        .then(data => {
+          const current = data.current || {};
+          return fetchLocationName(latitude, longitude)
+            .catch(() => `GPS ${formatCoords(latitude, longitude)}`)
+            .then(cityName => {
+              state.weather = {
+                city: cityName,
+                status: "已根据 GPS 更新实时天气",
+                temperature: Math.round(Number(current.temperature_2m ?? 23)),
+                humidity: Math.round(Number(current.relative_humidity_2m ?? 50)),
+                uv: Number(current.uv_index ?? 0).toFixed(1),
+                code: Number(current.weather_code ?? 2)
+              };
+              rebuild();
+            });
+        })
+        .catch(() => fallbackWeather("天气接口暂不可用，已使用默认天气数据"));
+    }
+
+    function requestWeather() {
+      if (!("geolocation" in navigator)) {
+        fallbackWeather("当前浏览器不支持定位，已使用默认天气数据");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        position => fetchWeatherByCoords(position.coords.latitude, position.coords.longitude),
+        () => fallbackWeather("定位未授权或不可用，已使用默认天气数据"),
+        { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }
+      );
+    }
+
+    function readImageFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const dataUrl = String(reader.result || "");
+          const [, meta = "", base64 = ""] = dataUrl.match(/^data:(.+);base64,(.*)$/) || [];
+          if (!base64) {
+            reject(new Error("图片读取失败"));
+            return;
+          }
+          resolve({ dataUrl, mimeType: meta || file.type || "image/jpeg", base64 });
+        };
+        reader.onerror = () => reject(new Error("图片读取失败"));
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function getAiPrompt() {
+      if (state.aiMode === "clothing") {
+        return `你是一个时尚穿搭专家。请帮我识别这张照片中的衣服/鞋帽。
+1. 识别它的【衣物名称】（如：白色纯棉T恤、深灰色连帽卫衣、轻薄防风外套）。
+2. 判断它属于哪种【类别】：['上衣', '外套', '下装', '鞋履', '配饰']。
+3. 评估它的【适用温度区间】（给出推荐穿着的摄氏度区间，例如：15-22）。
+4. 提取它的【核心属性】（如：透气、防风、保暖、防水、防空调冷气）。
+请严格以 JSON 格式返回：
+{
+  "name": "衣物名称",
+  "category": "类别",
+  "temperature": "15-22",
+  "attributes": ["属性1", "属性2"]
+}`;
+      }
+
+      return `你是一个专业的皮肤科医生和护肤品专家。请帮我识别这张照片中的护肤品。
+1. 识别它的准确【产品名称】。
+2. 联网检索或根据知识库分析其【核心有效成分】。
+3. 判断它属于以下哪类标签（可多选，仅输出数组）：['高浓度酸类', '视黄醇/A醇', '维他命C/VC', '烟酰胺', '纯保湿/修护', '高效防晒']。
+4. 检索其【最佳使用时段】（仅晚上/仅白天/早晚皆可）以及官方推荐的【使用方法】。
+请严格以 JSON 格式返回，格式如下：
+{
+  "name": "产品名",
+  "tags": ["标签1", "标签2"],
+  "time": "仅晚上",
+  "usage": "使用方法说明"
+}`;
+    }
+
+    async function callGeminiVision(image, prompt) {
+      const response = await fetch("/api/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt,
+          image: {
+            mimeType: image.mimeType,
+            base64: image.base64
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `AI 接口请求失败：${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.result;
+    }
+
+    async function analyzeAiImage() {
+      if (!state.aiImage) {
+        state.aiError = "请先拍照或上传一张图片。";
+        renderAiScanner();
+        return;
+      }
+
+      state.aiLoading = true;
+      state.aiError = "";
+      state.aiResult = null;
+      renderAiScanner();
+
+      try {
+        const rawResult = await callGeminiVision(state.aiImage, getAiPrompt());
+        state.aiResult = state.aiMode === "skincare" ? normalizeSkincareAiResult(rawResult) : normalizeClothingAiResult(rawResult);
+        if (state.aiMode === "skincare") {
+          els.customProductName.value = state.aiResult.name;
+          els.customProductCategory.value = state.aiResult.category;
+          els.customProductPeriod.value = state.aiResult.period;
+        }
+      } catch (error) {
+        state.aiError = error.message || "AI 识别失败，请稍后重试。";
+      } finally {
+        state.aiLoading = false;
+        renderAiScanner();
+      }
+    }
+
+    function confirmAiSkincare() {
+      if (!state.aiResult || state.aiMode !== "skincare") return;
+      const product = {
+        id: `custom_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+        name: state.aiResult.name,
+        category: state.aiResult.category,
+        period: state.aiResult.period,
+        tags: state.aiResult.tags,
+        usage: state.aiResult.usage,
+        checked: true
+      };
+
+      state.customProducts.unshift(product);
+      if (usableAtNight(product)) {
+        state.customNightSelection[product.id] = false;
+      }
+      saveCustomProducts();
+      els.customProductName.value = product.name;
+      els.customProductCategory.value = product.category;
+      els.customProductPeriod.value = product.period;
+      state.aiResult = null;
+      rebuild();
+    }
+
+    function confirmAiClothing() {
+      if (!state.aiResult || state.aiMode !== "clothing") return;
+      state.wardrobeItems.unshift({
+        id: `cloth_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+        ...state.aiResult
+      });
+      saveWardrobeItems();
+      state.aiResult = null;
+      rebuild();
+    }
+
+    function createChip(option, checked, scope) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `chip tap min-h-[48px] rounded-2xl px-3 py-3 text-left text-xs font-bold leading-snug ${checked ? "is-on" : ""}`;
+      button.dataset.scope = scope;
+      button.dataset.key = option.key;
+      button.innerHTML = `<span class="block">${escapeHtml(option.label)}</span>${option.short ? `<span class="mt-1 block text-[10px] opacity-70">${escapeHtml(option.short)}</span>` : ""}`;
+      return button;
+    }
+
+    function renderOptions() {
+      els.productOptions.innerHTML = "";
+      productOptions.forEach(option => {
+        els.productOptions.appendChild(createChip(option, Boolean(state.products[option.key]), "product"));
+      });
+
+      renderCustomProducts();
+
+      els.nightOptions.innerHTML = "";
+      getNightTestOptions().forEach(option => {
+        const checked = option.custom ? Boolean(state.customNightSelection[option.key]) : Boolean(state.nightSelection[option.key]);
+        els.nightOptions.appendChild(createChip(option, checked, option.custom ? "nightCustom" : "night"));
+      });
+    }
+
+    function renderCustomProducts() {
+      if (state.customProducts.length === 0) {
+        els.customProductList.innerHTML = `
+          <div class="rounded-2xl border border-dashed border-[#d8cfc5] bg-white/35 p-4 text-xs leading-relaxed text-[#8d8880]">
+            还没有手动录入产品。添加后会保存在本机浏览器中，下次刷新仍会保留。
+          </div>
+        `;
+        return;
+      }
+
+      els.customProductList.innerHTML = state.customProducts.map(product => {
+        const meta = categoryMeta[product.category];
+        const productName = escapeHtml(product.name);
+        return `
+          <article class="rounded-2xl border ${product.checked ? "border-[#9aa990]/45 bg-[#edf1e8]/70" : "border-[#d8cfc5]/70 bg-white/45"} p-3">
+            <div class="flex items-start justify-between gap-3">
+              <button class="tap flex min-w-0 flex-1 items-start gap-3 text-left" data-scope="customOwned" data-key="${product.id}" type="button">
+                <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${product.checked ? "border-[#6f8068] bg-[#6f8068] text-white" : "border-[#b9b1a6] bg-white/60 text-transparent"} text-[11px]">✓</span>
+                <span class="min-w-0">
+                  <span class="block truncate text-sm font-bold text-[#4b4742]">${productName}</span>
+                  <span class="mt-1 block text-[11px] text-[#8d8880]">${meta.label} · ${periodMeta[product.period]}</span>
+                  ${product.usage ? `<span class="mt-1 block text-[11px] leading-relaxed text-[#8d8880]">${escapeHtml(product.usage)}</span>` : ""}
+                </span>
+              </button>
+              <button class="tap rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-bold text-[#a36b63]" data-scope="deleteCustom" data-key="${product.id}" type="button">删除</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderWardrobe() {
+      if (state.wardrobeItems.length === 0) {
+        els.wardrobeList.innerHTML = `
+          <div class="rounded-2xl border border-dashed border-[#d8cfc5] bg-white/35 p-4 text-xs leading-relaxed text-[#8d8880]">
+            还没有入库衣物。上传衣物照片并确认入库后，穿搭建议会优先从这里挑选。
+          </div>
+        `;
+        return;
+      }
+
+      els.wardrobeList.innerHTML = state.wardrobeItems.map(item => `
+        <article class="rounded-2xl border border-[#9aa990]/35 bg-[#edf1e8]/65 p-3">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="truncate text-sm font-bold text-[#4b4742]">${escapeHtml(item.name)}</p>
+              <p class="mt-1 text-[11px] text-[#8d8880]">${escapeHtml(item.category)} · ${escapeHtml(item.temperature)}°C</p>
+              <div class="mt-2 flex flex-wrap gap-1.5">
+                ${item.attributes.map(attr => `<span class="rounded-full bg-white/70 px-2 py-1 text-[10px] font-bold text-[#6f8068]">${escapeHtml(attr)}</span>`).join("")}
+              </div>
+            </div>
+            <button class="tap shrink-0 rounded-full bg-white/70 px-3 py-1.5 text-[11px] font-bold text-[#a36b63]" data-scope="deleteWardrobe" data-key="${item.id}" type="button">删除</button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderAiModeButtons() {
+      document.querySelectorAll("[data-ai-mode]").forEach(button => {
+        const active = button.dataset.aiMode === state.aiMode;
+        button.className = `tap rounded-2xl px-3 py-3 text-xs font-bold ${active ? "bg-[#6f8068] text-white" : "bg-white/70 text-[#6f8068]"}`;
+      });
+      els.aiUploadHint.textContent = `当前模式：${state.aiMode === "skincare" ? "护肤品识别" : "衣物识别"}。支持手机拍照或从相册选择。`;
+    }
+
+    function renderAiStatus() {
+      renderAiModeButtons();
+      els.aiAnalyzeButton.disabled = state.aiLoading;
+      els.aiAnalyzeButton.textContent = state.aiLoading ? "AI 识别中..." : "开始 AI 识别";
+
+      if (state.aiImage?.dataUrl) {
+        els.aiImagePreview.src = state.aiImage.dataUrl;
+        els.aiImagePreview.classList.remove("hidden");
+      } else {
+        els.aiImagePreview.classList.add("hidden");
+      }
+
+      if (state.aiLoading) {
+        els.aiRecognitionStatus.classList.remove("hidden");
+        els.aiRecognitionStatus.innerHTML = `<div class="flex items-center gap-3"><span class="loading-ring"></span><span>正在识别图片并整理 JSON 结果，请稍候。</span></div>`;
+      } else if (state.aiError) {
+        els.aiRecognitionStatus.classList.remove("hidden");
+        els.aiRecognitionStatus.className = "mt-3 rounded-2xl bg-[#f4dfda]/80 p-3 text-xs leading-relaxed text-[#8b514b]";
+        els.aiRecognitionStatus.textContent = state.aiError;
+      } else {
+        els.aiRecognitionStatus.className = "mt-3 hidden rounded-2xl bg-[#eef0e8]/75 p-3 text-xs leading-relaxed text-[#6f8068]";
+        els.aiRecognitionStatus.classList.add("hidden");
+      }
+    }
+
+    function renderAiResult() {
+      if (!state.aiResult) {
+        els.aiResultPanel.innerHTML = "";
+        return;
+      }
+
+      if (state.aiMode === "skincare") {
+        const result = state.aiResult;
+        els.aiResultPanel.innerHTML = `
+          <article class="rounded-[1.35rem] border border-[#9aa990]/40 bg-[#edf1e8]/80 p-4">
+            <p class="text-[11px] font-bold tracking-[0.2em] text-[#6f8068]">SKINCARE RESULT</p>
+            <h3 class="serif mt-1 text-lg font-bold">${escapeHtml(result.name)}</h3>
+            <p class="mt-2 text-xs text-[#8d8880]">${result.tags.map(escapeHtml).join(" · ")} · ${escapeHtml(result.time)}</p>
+            <p class="mt-3 text-xs leading-relaxed text-[#5f5a52]">${escapeHtml(result.usage)}</p>
+            <button class="tap mt-3 w-full rounded-full bg-[#6f8068] px-4 py-3 text-sm font-bold text-white" data-scope="confirmAiSkincare" type="button">确认入库到我的化妆台</button>
+          </article>
+        `;
+        return;
+      }
+
+      const result = state.aiResult;
+      els.aiResultPanel.innerHTML = `
+        <article class="rounded-[1.35rem] border border-[#9aa990]/40 bg-[#edf1e8]/80 p-4">
+          <p class="text-[11px] font-bold tracking-[0.2em] text-[#6f8068]">CLOSET RESULT</p>
+          <h3 class="serif mt-1 text-lg font-bold">${escapeHtml(result.name)}</h3>
+          <p class="mt-2 text-xs text-[#8d8880]">${escapeHtml(result.category)} · ${escapeHtml(result.temperature)}°C</p>
+          <div class="mt-3 flex flex-wrap gap-1.5">
+            ${result.attributes.map(attr => `<span class="rounded-full bg-white/70 px-2 py-1 text-[10px] font-bold text-[#6f8068]">${escapeHtml(attr)}</span>`).join("")}
+          </div>
+          <button class="tap mt-3 w-full rounded-full bg-[#6f8068] px-4 py-3 text-sm font-bold text-white" data-scope="confirmAiClothing" type="button">确认入库到智能衣橱</button>
+        </article>
+      `;
+    }
+
+    function renderAiScanner() {
+      renderAiStatus();
+      renderAiResult();
+    }
+
+    function checkIngredientConflicts() {
+      const selectedItems = getNightTestOptions().filter(option =>
+        option.custom ? state.customNightSelection[option.key] : state.nightSelection[option.key]
+      );
+      const ingredientsOf = item => item.ingredients || [item.ingredient];
+      const acidItems = selectedItems.filter(item => ingredientsOf(item).some(ingredient => ["acid", "salicylic_acid", "aha"].includes(ingredient)));
+      const has = ingredient => selectedItems.some(item => ingredientsOf(item).includes(ingredient));
+      const names = items => items.map(item => item.label).join(" + ");
+      const conflicts = [];
+
+      if (acidItems.length && has("retinol")) {
+        conflicts.push({
+          title: `${names(acidItems)} + 视黄醇/A 醇`,
+          reason: "高浓度酸与 A 醇叠加刺激性过大，熬夜后屏障脆弱时更容易发红、脱皮。",
+          suggestion: "建议今晚仅保留酸类进行局部刷酸，并搭配温和保湿修护；将 A 醇移至明晚或后天使用。"
+        });
+      }
+
+      if (acidItems.length && has("niacinamide")) {
+        conflicts.push({
+          title: `${names(acidItems)} + 烟酰胺`,
+          reason: "低 pH 值酸类可能增加烟酰胺转化为烟酸的风险，容易引起明显发红和刺痛。",
+          suggestion: "建议酸类与含烟酰胺的密集修护产品分日使用，今晚刷酸后只叠加基础保湿。"
+        });
+      }
+
+      if (has("retinol") && has("vitamin_c")) {
+        conflicts.push({
+          title: "视黄醇/A 醇 + 高浓度维 C",
+          reason: "两者最佳活性 pH 不同，同时使用会互相打折扣，并增加熬夜肌的刺激负担。",
+          suggestion: "建议把维 C 固定在早间，今晚只使用 A 醇并做好保湿；如果皮肤干燥，今晚改为纯修护。"
+        });
+      }
+
+      if (acidItems.length >= 2) {
+        conflicts.push({
+          title: `${names(acidItems)} 多酸叠加`,
+          reason: "多种酸类叠加会过度剥脱角质，久坐空调房更容易干燥敏感。",
+          suggestion: "建议今晚只保留一种酸类，另一种移至间隔 2-3 天后的夜间，并在次日安排修护面膜。"
+        });
+      }
+
+      return conflicts;
+    }
+
+    function renderConflictResult() {
+      const conflicts = checkIngredientConflicts();
+      const hasAnySelection = getNightTestOptions().some(option =>
+        option.custom ? state.customNightSelection[option.key] : state.nightSelection[option.key]
+      );
+      if (!hasAnySelection) {
+        els.conflictResult.className = "mt-4 rounded-[1.35rem] bg-white/55 p-4";
+        els.conflictResult.innerHTML = `
+          <p class="text-sm font-bold text-[#8d8880]">请选择今晚计划使用的产品</p>
+          <p class="mt-1 text-xs leading-relaxed text-[#8d8880]">建议先选活性成分，再搭配基础保湿修护。</p>
+        `;
+        return;
+      }
+
+      if (conflicts.length === 0) {
+        els.conflictResult.className = "mt-4 rounded-[1.35rem] border border-[#9aa990]/40 bg-[#edf1e8]/80 p-4";
+        els.conflictResult.innerHTML = `
+          <p class="text-sm font-bold text-[#5f7358]">当前组合未发现高风险冲突</p>
+          <p class="mt-1 text-xs leading-relaxed text-[#6f8068]">今晚方案更适合熬夜和空调环境下的屏障维护。若皮肤已经发红，仍建议只做温和保湿。</p>
+        `;
+        return;
+      }
+
+      els.conflictResult.className = "danger-card mt-4 rounded-[1.35rem] p-4";
+      els.conflictResult.innerHTML = conflicts.map(conflict => `
+        <article class="mb-4 last:mb-0">
+          <p class="text-sm font-bold text-[#8b514b]">危险搭配！${escapeHtml(conflict.title)}</p>
+          <p class="mt-2 text-xs leading-relaxed text-[#8b514b]">${escapeHtml(conflict.reason)}</p>
+          <div class="mt-3 rounded-2xl bg-white/55 p-3">
+            <p class="text-[11px] font-bold tracking-[0.16em] text-[#a36b63]">替代方案</p>
+            <p class="mt-1 text-xs leading-relaxed text-[#6e5b56]">${escapeHtml(conflict.suggestion)}</p>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function getAcidDays() {
+      if (!hasCategory("acid")) return [];
+      if (state.products.salicylic && state.products.aha) return [1, 4];
+      return [1, 5];
+    }
+
+    function acidNameForIndex(index) {
+      if (state.products.salicylic && state.products.aha) {
+        return index % 2 === 0 ? "The Ordinary 果酸" : "The Ordinary 水杨酸";
+      }
+      if (state.products.salicylic) return "The Ordinary 水杨酸";
+      if (state.products.aha) return "The Ordinary 果酸";
+      return firstCustomName("acid", "自定义酸类产品", usableAtNight);
+    }
+
+    function scoreWardrobeItem(item, temp, humidity) {
+      const range = parseTemperatureRange(item.temperature);
+      const inRange = temp >= range.min && temp <= range.max;
+      let score = inRange ? 8 : Math.max(0, 5 - Math.min(Math.abs(temp - range.min), Math.abs(temp - range.max)));
+      const attrs = item.attributes.join(" ");
+      if (humidity >= 70 && /透气|速干|防水|轻薄/.test(attrs)) score += 3;
+      if (humidity < 50 && /柔软|保湿|防空调|防风/.test(attrs)) score += 2;
+      if (temp < 15 && /保暖|防风|防空调/.test(attrs)) score += 3;
+      if (temp >= 25 && /透气|速干|轻薄/.test(attrs)) score += 3;
+      return score;
+    }
+
+    function getWardrobeRecommendations(temp, humidity) {
+      const ranked = [...state.wardrobeItems]
+        .map(item => ({ ...item, score: scoreWardrobeItem(item, temp, humidity) }))
+        .filter(item => item.score >= 5)
+        .sort((a, b) => b.score - a.score);
+
+      const preferredOrder = ["上衣", "外套", "下装", "鞋履", "配饰"];
+      const picked = [];
+      preferredOrder.forEach(category => {
+        const item = ranked.find(candidate => candidate.category === category && !picked.some(pick => pick.id === candidate.id));
+        if (item) picked.push(item);
+      });
+      return picked.slice(0, 3);
+    }
+
+    function getFallbackOutfitAdvice(temp, humidity) {
+      let base = "";
+
+      if (temp >= 25) {
+        base = "透气 T 恤 + 轻薄长裤，外出防晒，进办公室可加一件薄衬衫抵御空调冷气。";
+      } else if (temp >= 15) {
+        base = "衬衫或轻卫衣 + 薄外套，适合通勤和会议间自由穿脱叠穿。";
+      } else {
+        base = "高领内搭 + 针织或短外套，久坐时注意腰腹和脚踝保暖。";
+      }
+
+      if (humidity >= 70) {
+        return `${base} 湿度偏高，优先选择透气速干面料，避免厚重不透气材质。`;
+      }
+
+      if (humidity < 50) {
+        return `${base} 空气偏干，建议准备柔软围巾或开衫，减少空调直吹带来的干燥感。`;
+      }
+
+      return base;
+    }
+
+    function getOutfitAdvice() {
+      const temp = Number(state.weather.temperature ?? 23);
+      const humidity = Number(state.weather.humidity ?? 50);
+      const picks = getWardrobeRecommendations(temp, humidity);
+
+      if (picks.length) {
+        const names = picks.map(item => `「${item.name}」`).join(" 搭配 ");
+        const humidityHint = humidity >= 70
+          ? "湿度偏高，优先选择透气、速干或防水属性。"
+          : humidity < 50
+            ? "空气偏干，适合柔软、防风或防空调冷气的单品。"
+            : "湿度舒适，按温度区间选择轻松通勤组合。";
+        return `今天体感 ${temp}°、湿度 ${humidity}%，建议从智能衣橱选择 ${names}。${humidityHint}`;
+      }
+
+      return getFallbackOutfitAdvice(temp, humidity);
+    }
+
+    function buildDayPlan(index) {
+      const date = new Date();
+      date.setDate(date.getDate() + index);
+
+      const acidDays = getAcidDays();
+      const acidDay = acidDays.includes(index);
+      const repairAfterAcid = acidDays.includes(index - 1);
+      const dry = Number(state.weather.humidity ?? 50) < 50;
+      const uvStrong = Number(state.weather.uv ?? 0) >= 3;
+      const tags = [];
+      const notes = [];
+
+      const morning = [];
+      if (hasCategory("vitamin_c")) {
+        morning.push(`${firstCustomName("vitamin_c", "高浓度维 C", usableInDay)} 抗氧防护，薄涂后等待吸收`);
+      } else {
+        morning.push("温和洁面 + 基础保湿，降低熬夜后的刺激负担");
+      }
+
+      if (hasCategory("sunscreen")) {
+        const sunscreenName = firstCustomName("sunscreen", "ALLIE 级别高效防晒", usableInDay);
+        morning.push(uvStrong ? `${sunscreenName} 足量涂抹，外出补物理遮阳` : `${sunscreenName} 作为通勤底线`);
+        tags.push("防晒");
+      } else if (uvStrong) {
+        morning.push("当前 UV 偏高，建议补充高效防晒产品");
+        tags.push("需补防晒");
+      }
+
+      const evening = [];
+      let theme = "保湿平衡";
+
+      if (acidDay) {
+        const acidName = acidNameForIndex(index);
+        theme = "温和刷酸";
+        tags.push("刷酸", "停用 A 醇");
+        evening.push(`${acidName} 局部使用，避开眼周和泛红区域`);
+        if (hasCategory("repair")) {
+          evening.push(`后续搭配 ${firstCustomName("repair", "LuLuLun 修护/基础保湿面膜", usableAtNight)}，减少干燥紧绷`);
+        } else {
+          evening.push("后续只叠加无香精基础保湿，避免活性叠加");
+        }
+        notes.push("酸类与视黄醇不可同晚使用，今晚停用 A 醇。");
+      } else if (repairAfterAcid) {
+        theme = "屏障修护";
+        tags.push("修护日", "不刷酸");
+        evening.push(hasCategory("repair") ? `${firstCustomName("repair", "LuLuLun Precious Green 修护面膜", usableAtNight)} 10-15 分钟` : "温和保湿面膜或面霜厚敷修护");
+        evening.push("不安排酸类与 A 醇，让屏障恢复稳定");
+        notes.push("刷酸次日自动设为温和修护/保湿日。");
+      } else if (hasCategory("retinol")) {
+        theme = "晚 A 抗老";
+        tags.push("晚 A");
+        evening.push(`${firstCustomName("retinol", "视黄醇", usableAtNight)} 薄涂，避开眼周和鼻翼泛红处`);
+        evening.push("叠加舒缓保湿面霜，减少干燥脱皮风险");
+      } else {
+        tags.push("保湿");
+        evening.push(hasCategory("repair") ? `${firstCustomName("repair", "LuLuLun 基础保湿面膜", usableAtNight)} 补水维稳` : "基础保湿精华 + 面霜锁水");
+      }
+
+      if (dry) {
+        tags.push("加强补水");
+        evening.push("湿度低于 50%，今晚追加加强补水，优先使用高效保湿面膜");
+      }
+
+      if (hasCategory("niacinamide") && !acidDay) {
+        notes.push("含烟酰胺修护更适合非刷酸夜使用。");
+      }
+
+      return {
+        index,
+        key: dateKey(date),
+        date,
+        dayLabel: formatDate(date),
+        shortLabel: shortDate(date),
+        theme,
+        tags: [...new Set(tags)],
+        morning,
+        evening,
+        notes,
+        outfit: getOutfitAdvice()
+      };
+    }
+
+    function generateSchedule() {
+      state.schedule = Array.from({ length: 7 }, (_, index) => buildDayPlan(index));
+    }
+
+    function renderWeather() {
+      const { city, status, temperature, humidity, uv, code } = state.weather;
+      els.cityLabel.textContent = city;
+      els.weatherStatus.textContent = status;
+      els.temperatureLabel.textContent = temperature === null ? "--" : `${temperature}°`;
+      els.humidityLabel.textContent = humidity === null ? "--" : `${humidity}%`;
+      els.uvLabel.textContent = uv === null ? "--" : uv;
+      els.weatherCodeLabel.textContent = code === null ? "--" : getWeatherText(code);
+
+      if (Number(uv ?? 0) >= 3) {
+        els.uvBanner.classList.remove("hidden");
+        els.uvBanner.textContent = "当前紫外线强烈，请务必涂抹 ALLIE 级别高效防晒，并注意物理遮阳！";
+      } else {
+        els.uvBanner.classList.add("hidden");
+      }
+    }
+
+    function renderStreak() {
+      state.streakCount = calculateStreak(state.checkinDates);
+      els.streakLabel.textContent = `已连续守护肌肤 ${state.streakCount} 天`;
+    }
+
+    function renderCalendar() {
+      els.calendar.innerHTML = state.schedule.map(day => {
+        const expanded = day.index === state.selectedDay;
+        const completed = state.completed.has(day.index) || state.checkinDates.includes(day.key);
+        const tagHtml = day.tags.map(tag => `<span class="rounded-full bg-[#eef0e8] px-2.5 py-1 text-[10px] font-bold text-[#6f8068]">${tag}</span>`).join("");
+
+        return `
+          <article class="calendar-card soft-card ${completed ? "completed" : ""} rounded-[1.55rem] p-4 transition" data-day="${day.index}">
+            <button class="tap day-toggle flex w-full items-center justify-between gap-3 text-left" data-day="${day.index}" type="button">
+              <div class="min-w-0">
+                <p class="text-[11px] font-bold tracking-[0.2em] text-[#8d8880]">${day.dayLabel}</p>
+                <h3 class="serif mt-1 text-lg font-bold">${day.theme}</h3>
+              </div>
+              <div class="shrink-0 rounded-full bg-white/70 px-3 py-2 text-xs font-bold text-[#6f8068]">${completed ? "已完成" : day.shortLabel}</div>
+            </button>
+            <div class="mt-3 flex flex-wrap gap-1.5">${tagHtml}</div>
+            ${expanded ? `
+              <div class="fade-in mt-4 space-y-3">
+                <div class="rounded-[1.25rem] bg-white/55 p-4">
+                  <p class="text-[11px] font-bold tracking-[0.18em] text-[#8d8880]">早研方案</p>
+                  <ul class="mt-2 space-y-1.5 text-sm leading-relaxed text-[#5f5a52]">
+                    ${day.morning.map(item => `<li class="task-line">• ${item}</li>`).join("")}
+                  </ul>
+                </div>
+                <div class="rounded-[1.25rem] bg-white/55 p-4">
+                  <p class="text-[11px] font-bold tracking-[0.18em] text-[#8d8880]">晚护方案</p>
+                  <ul class="mt-2 space-y-1.5 text-sm leading-relaxed text-[#5f5a52]">
+                    ${day.evening.map(item => `<li class="task-line">• ${item}</li>`).join("")}
+                  </ul>
+                  ${day.notes.length ? `<div class="mt-3 rounded-2xl bg-[#f5efe3]/80 p-3 text-xs leading-relaxed text-[#7b7066]">${day.notes.join(" ")}</div>` : ""}
+                </div>
+                <div class="rounded-[1.25rem] bg-[#eef0e8]/70 p-4">
+                  <p class="text-[11px] font-bold tracking-[0.18em] text-[#6f8068]">今日穿搭建议</p>
+                  <p class="mt-2 text-sm leading-relaxed text-[#5f5a52]">${escapeHtml(day.outfit)}</p>
+                </div>
+                <button class="tap check-button w-full rounded-full ${completed ? "bg-[#d8cfc5] text-white" : "bg-[#6f8068] text-white"} px-4 py-3 text-sm font-bold shadow-lg shadow-[#6f8068]/15" data-day="${day.index}" type="button">
+                  ${completed ? "已完成今日打卡" : "完成今日护肤打卡"}
+                </button>
+              </div>
+            ` : ""}
+          </article>
+        `;
+      }).join("");
+    }
+
+    function rebuild() {
+      generateSchedule();
+      renderWeather();
+      renderStreak();
+      renderOptions();
+      renderWardrobe();
+      renderAiScanner();
+      renderConflictResult();
+      renderCalendar();
+    }
+
+    function bindEvents() {
+      document.addEventListener("click", event => {
+        const chip = event.target.closest("[data-scope]");
+        if (chip) {
+          const scope = chip.dataset.scope;
+          const key = chip.dataset.key;
+          if (scope === "product") {
+            state.products[key] = !state.products[key];
+          }
+          if (scope === "night") {
+            state.nightSelection[key] = !state.nightSelection[key];
+          }
+          if (scope === "nightCustom") {
+            state.customNightSelection[key] = !state.customNightSelection[key];
+          }
+          if (scope === "customOwned") {
+            const product = state.customProducts.find(item => item.id === key);
+            if (product) {
+              product.checked = !product.checked;
+              saveCustomProducts();
+            }
+          }
+          if (scope === "deleteCustom") {
+            state.customProducts = state.customProducts.filter(item => item.id !== key);
+            delete state.customNightSelection[key];
+            saveCustomProducts();
+          }
+          if (scope === "deleteWardrobe") {
+            state.wardrobeItems = state.wardrobeItems.filter(item => item.id !== key);
+            saveWardrobeItems();
+          }
+          if (scope === "confirmAiSkincare") {
+            confirmAiSkincare();
+            return;
+          }
+          if (scope === "confirmAiClothing") {
+            confirmAiClothing();
+            return;
+          }
+          rebuild();
+          return;
+        }
+
+        const dayToggle = event.target.closest(".day-toggle");
+        if (dayToggle) {
+          state.selectedDay = Number(dayToggle.dataset.day);
+          renderCalendar();
+          return;
+        }
+
+        const checkButton = event.target.closest(".check-button");
+        if (checkButton) {
+          const day = Number(checkButton.dataset.day);
+          const isCompleted = state.completed.has(day) || (day === 0 && state.checkinDates.includes(offsetDateKey(0)));
+          if (isCompleted) {
+            state.completed.delete(day);
+            if (day === 0) {
+              setTodayCheckin(false);
+            }
+          } else {
+            state.completed.add(day);
+            if (day === 0) {
+              setTodayCheckin(true);
+            }
+          }
+          renderStreak();
+          renderCalendar();
+        }
+      });
+
+      els.resetProducts.addEventListener("click", () => {
+        state.products = { ...defaultProducts };
+        rebuild();
+      });
+
+      document.querySelectorAll("[data-ai-mode]").forEach(button => {
+        button.addEventListener("click", () => {
+          state.aiMode = button.dataset.aiMode;
+          state.aiResult = null;
+          state.aiError = "";
+          renderAiScanner();
+        });
+      });
+
+      els.aiImageInput.addEventListener("change", async event => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        state.aiError = "";
+        state.aiResult = null;
+        try {
+          state.aiImage = await readImageFile(file);
+        } catch (error) {
+          state.aiError = error.message || "图片读取失败。";
+        }
+        renderAiScanner();
+      });
+
+      els.aiAnalyzeButton.addEventListener("click", analyzeAiImage);
+
+      els.customProductForm.addEventListener("submit", event => {
+        event.preventDefault();
+        const name = els.customProductName.value.trim();
+        if (!name) return;
+
+        const product = {
+          id: `custom_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+          name,
+          category: els.customProductCategory.value,
+          period: els.customProductPeriod.value,
+          checked: true
+        };
+
+        state.customProducts.unshift(product);
+        if (usableAtNight(product)) {
+          state.customNightSelection[product.id] = false;
+        }
+        saveCustomProducts();
+        els.customProductForm.reset();
+        els.customProductPeriod.value = "night";
+        rebuild();
+      });
+    }
+
+    function init() {
+      state.customProducts = loadCustomProducts();
+      state.wardrobeItems = loadWardrobeItems();
+      loadCheckinHistory();
+      setToday();
+      bindEvents();
+      rebuild();
+      requestWeather();
+    }
+
+    init();
+  </script>
+</body>
+</html>
